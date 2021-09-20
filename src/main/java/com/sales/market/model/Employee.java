@@ -4,16 +4,22 @@
 
 package com.sales.market.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import com.sales.market.dto.EmployeeDto;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Employee extends ModelBase {
+public class Employee extends ModelBase<EmployeeDto> {
     private String firstName;
     private String lastName;
+
+    @Column(length = 1, nullable = false)
+    private boolean available = true;
+
+    @OneToOne(mappedBy = "employee")
+    private User user;
+
     private Byte[] image;
 
     // por defecto en fields es EAGER y en collecciones es LAZY  y todo valor booleano es true
@@ -53,5 +59,21 @@ public class Employee extends ModelBase {
 
     public void setContracts(List<Contract> contracts) {
         this.contracts = contracts;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

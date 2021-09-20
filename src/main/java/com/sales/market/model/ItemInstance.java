@@ -8,8 +8,11 @@ import com.sales.market.dto.ItemInstanceDto;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UK_ITEMINSTANCE_IDENTIFIER", columnNames = {"identifier"})})
 public class ItemInstance extends ModelBase<ItemInstanceDto> {
     @OneToOne
     private Item item;

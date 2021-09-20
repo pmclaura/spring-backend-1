@@ -30,7 +30,7 @@ public class BuyController extends GenericController<Buy, BuyDto> {
         super.deleteElement(id);
     }*/
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('GENERAL')")
     @GetMapping("/user")
     //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public String onlyUsers() {

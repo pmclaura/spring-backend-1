@@ -6,10 +6,8 @@ package com.sales.market;
 
 import com.sales.market.model.*;
 import com.sales.market.repository.BuyRepository;
-import com.sales.market.service.CategoryService;
-import com.sales.market.service.ItemInstanceService;
-import com.sales.market.service.ItemService;
-import com.sales.market.service.SubCategoryService;
+import com.sales.market.repository.EmployeeRepository;
+import com.sales.market.service.*;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.List;
 
 @Component
 public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -27,19 +27,27 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
     private final SubCategoryService subCategoryService;
     private final ItemService itemService;
     private final ItemInstanceService itemInstanceService;
+    private EmployeeRepository employeeRepository;
+    private UserService userService;
+    private RoleService roleService;
 
     SubCategory beverageSubCat = null;
 
     // injeccion evita hacer instancia   = new Clase();
     // bean pueden tener muchos campos y otros beans asociados
 
+
     public DevelopmentBootstrap(BuyRepository buyRepository, CategoryService categoryService,
-            SubCategoryService subCategoryService, ItemService itemService, ItemInstanceService itemInstanceService) {
+            SubCategoryService subCategoryService, ItemService itemService, ItemInstanceService itemInstanceService,
+            EmployeeRepository employeeRepository, UserService userService, RoleService roleService) {
         this.buyRepository = buyRepository;
         this.categoryService = categoryService;
         this.subCategoryService = subCategoryService;
         this.itemService = itemService;
         this.itemInstanceService = itemInstanceService;
+        this.employeeRepository = employeeRepository;
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -58,7 +66,58 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         persistCategoriesAndSubCategories();
         Item maltinItem = persistItems(beverageSubCat);
         persistItemInstances(maltinItem);
+        initializeRoles();
+        initializeEmployees();
     }
+
+    private void initializeRoles() {
+        createRole(RoleType.ADMIN.getId(), RoleType.ADMIN.getType());
+        createRole(RoleType.GENERAL.getId(), RoleType.GENERAL.getType());
+        createRole(RoleType.SUPERVISOR.getId(), RoleType.SUPERVISOR.getType());
+    }
+
+    private Role createRole(long id, String roleName) {
+        Role role = new Role();
+        role.setId(id);
+        role.setName(roleName);
+        roleService.save(role);
+        return role;
+    }
+
+    private void initializeEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        if (employees.isEmpty()) {
+            createEmployee("Edson", "Terceros", "edsonariel@gmail.com", false);
+            createEmployee("Ariel", "Terceros", "ariel@gmail.com", false);
+            createEmployee("System", "", "edson@gmail.com", true);
+        }
+    }
+
+    private void createEmployee(String firstName, String lastName, String email, boolean system) {
+        Employee employee = new Employee();
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employeeRepository.save(employee);
+        createUser(email, employee, system);
+    }
+
+    private void createUser(String email, Employee employee, boolean system) {
+        User user = new User();
+        Role role = new Role();
+        HashSet<Role> roles = new HashSet<>();
+
+        user.setEmail(email);
+        user.setEnabled(true);
+        user.setSystem(system);
+        user.setPassword("$2a$10$XURPShQNCsLjp1ESc2laoObo9QZDhxz73hJPaEv7/cBha4pk0AgP.");
+        user.setEmployee(employee);
+
+        role.setId(1L);
+        roles.add(role);
+        user.setRoles(roles);
+        userService.save(user);
+    }
+
 
     private void persistItemInstances(Item maltinItem) {
         ItemInstance maltinItem1 = createItem(maltinItem, "SKU-77721106006158", 5D);
