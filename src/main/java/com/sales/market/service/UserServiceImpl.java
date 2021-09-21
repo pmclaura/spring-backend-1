@@ -32,6 +32,11 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
     }
 
     @Override
+    public List<User> findUsersByRol(String roleType){
+        return userRepository.findAllByRoles(roleType);
+    }
+
+    @Override
     public Page<User> findUsers(Pageable pageable) {
         return userRepository.findAllWithRoles(pageable);
     }

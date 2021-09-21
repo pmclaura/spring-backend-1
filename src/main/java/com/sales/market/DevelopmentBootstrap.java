@@ -30,6 +30,7 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
     private EmployeeRepository employeeRepository;
     private UserService userService;
     private RoleService roleService;
+    private ItemInventoryService itemInventoryService;
 
     SubCategory beverageSubCat = null;
 
@@ -38,8 +39,8 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
 
 
     public DevelopmentBootstrap(BuyRepository buyRepository, CategoryService categoryService,
-            SubCategoryService subCategoryService, ItemService itemService, ItemInstanceService itemInstanceService,
-            EmployeeRepository employeeRepository, UserService userService, RoleService roleService) {
+                                SubCategoryService subCategoryService, ItemService itemService, ItemInstanceService itemInstanceService,
+                                EmployeeRepository employeeRepository, UserService userService, RoleService roleService, ItemInventoryService itemInventoryService) {
         this.buyRepository = buyRepository;
         this.categoryService = categoryService;
         this.subCategoryService = subCategoryService;
@@ -48,6 +49,7 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         this.employeeRepository = employeeRepository;
         this.userService = userService;
         this.roleService = roleService;
+        this.itemInventoryService = itemInventoryService;
     }
 
     @Override
@@ -64,8 +66,9 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         persistBuy(BigDecimal.TEN);
         persistBuy(BigDecimal.ONE);
         persistCategoriesAndSubCategories();
-        Item maltinItem = persistItems(beverageSubCat);
+        Item maltinItem = persistItems(beverageSubCat,"B-MALTIN", "MALTIN");
         persistItemInstances(maltinItem);
+        persistsItemsAndItemInventory();
         initializeRoles();
         initializeEmployees();
     }
@@ -87,21 +90,21 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
     private void initializeEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         if (employees.isEmpty()) {
-            createEmployee("Edson", "Terceros", "edsonariel@gmail.com", false);
-            createEmployee("Ariel", "Terceros", "ariel@gmail.com", false);
-            createEmployee("System", "", "edson@gmail.com", true);
+            createEmployee("Mariel", "Lima", "pmclaura@gmail.com", false, 3L);
+            createEmployee("Ariel", "Terceros", "ariel@gmail.com", false, 1L);
+            createEmployee("Susana", "Lopes", "edson@gmail.com", true, 2L);
         }
     }
 
-    private void createEmployee(String firstName, String lastName, String email, boolean system) {
+    private void createEmployee(String firstName, String lastName, String email, boolean system, Long idRole) {
         Employee employee = new Employee();
         employee.setFirstName(firstName);
         employee.setLastName(lastName);
         employeeRepository.save(employee);
-        createUser(email, employee, system);
+        createUser(email, employee, system, idRole);
     }
 
-    private void createUser(String email, Employee employee, boolean system) {
+    private void createUser(String email, Employee employee, boolean system, Long idRole) {
         User user = new User();
         Role role = new Role();
         HashSet<Role> roles = new HashSet<>();
@@ -112,7 +115,7 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         user.setPassword("$2a$10$XURPShQNCsLjp1ESc2laoObo9QZDhxz73hJPaEv7/cBha4pk0AgP.");
         user.setEmployee(employee);
 
-        role.setId(1L);
+        role.setId(idRole);
         roles.add(role);
         user.setRoles(roles);
         userService.save(user);
@@ -139,10 +142,20 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         return itemInstance;
     }
 
-    private Item persistItems(SubCategory subCategory) {
+    private void persistsItemsAndItemInventory(){
+        Item item1 = persistItems(beverageSubCat, "B-MALTIN", "MALTIN");
+        persistItemInventory(item1, new BigDecimal(2), new BigDecimal(10), new BigDecimal(50));
+        Item item2 = persistItems(beverageSubCat, "B-PEPSI", "PEPSI");
+        persistItemInventory(item2, new BigDecimal(25), new BigDecimal(10), new BigDecimal(50));
+        Item item3 = persistItems(beverageSubCat, "B-7UP", "7UP");
+        persistItemInventory(item3, new BigDecimal(10), new BigDecimal(10), new BigDecimal(50));
+        Item item4 = persistItems(beverageSubCat, "B-COKE", "COKE");
+        persistItemInventory(item4, new BigDecimal(40), new BigDecimal(4), new BigDecimal(50));
+    }
+    private Item persistItems(SubCategory subCategory, String code, String name) {
         Item item = new Item();
-        item.setCode("B-MALTIN");
-        item.setName("MALTIN");
+        item.setCode(code);
+        item.setName(name);
         item.setSubCategory(subCategory);
         /*try {
             item.setImage(ImageUtils.inputStreamToByteArray(getResourceAsStream("/images/maltin.jpg")));
@@ -150,6 +163,17 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
             e.printStackTrace();
         }*/
         return itemService.save(item);
+    }
+
+    private ItemInventory persistItemInventory(Item item, BigDecimal stockQuantity,
+                                               BigDecimal lowerBound, BigDecimal upperBound){
+
+        ItemInventory itemInventory = new ItemInventory();
+        itemInventory.setItem(item);
+        itemInventory.setStockQuantity(stockQuantity);
+        itemInventory.setLowerBoundThreshold(lowerBound);
+        itemInventory.setUpperBoundThreshold(upperBound);
+        return itemInventoryService.save(itemInventory);
     }
 
     private String getResourceAsString(String resourceName) {
