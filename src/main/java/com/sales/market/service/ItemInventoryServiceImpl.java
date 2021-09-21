@@ -5,6 +5,7 @@ import com.sales.market.model.RoleType;
 import com.sales.market.model.User;
 import com.sales.market.repository.ItemInventoryRepository;
 import com.sales.market.repository.GenericRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -26,6 +27,7 @@ public class ItemInventoryServiceImpl extends GenericServiceImpl<ItemInventory> 
     }
 
     @Override
+    @Scheduled(cron = "0 25 23 * * ?", zone = "America/La_Paz")
     public List<ItemInventory> getItemsLowerBoundery() throws MessagingException {
         List<ItemInventory> listInventories = repository.geItemsLowerBoundery();
         service.sendEmailToSupervisor(listInventories);
