@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.math.BigDecimal;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UK_ITEMINSTANCE_IDENTIFIER", columnNames = {"identifier"})})
@@ -19,14 +20,25 @@ public class ItemInstance extends ModelBase<ItemInstanceDto> {
     private String identifier;// sku
 
     private Boolean featured = Boolean.FALSE;
-
-    // todo generalmente se usa BigDecimal
-    private Double price;
-    // todo estados AVAILABLE, SOLD, MAINTENANCE, ON_TRANSPORTATION
-    // private ItemInstanceState itemInstanceState;
-    // todo agregar totalCost
-
+    private BigDecimal price;
     private ItemInstanceStatus itemInstanceStatus;
+    private BigDecimal totalCost;
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public ItemInstanceStatus getItemInstanceStatus() {
+        return itemInstanceStatus;
+    }
+
+    public void setItemInstanceStatus(ItemInstanceStatus itemInstanceStatus) {
+        this.itemInstanceStatus = itemInstanceStatus;
+    }
 
     public Item getItem() {
         return item;
@@ -44,11 +56,11 @@ public class ItemInstance extends ModelBase<ItemInstanceDto> {
         this.identifier = identifier;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
