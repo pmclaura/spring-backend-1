@@ -5,11 +5,21 @@ import com.sales.market.model.ItemInventory;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ItemInventoryDto extends DtoBase<ItemInventory> {
+    private ItemDto item;
     private BigDecimal stockQuantity;
     private BigDecimal lowerBoundThreshold;
     private BigDecimal upperBoundThreshold;
+
+    public ItemDto getItem() {
+        return item;
+    }
+
+    public void setItem(ItemDto item) {
+        this.item = item;
+    }
 
     public BigDecimal getStockQuantity() {
         return stockQuantity;

@@ -5,7 +5,10 @@
 package com.sales.market.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.Set;
 
 @Entity
 public class Item extends ModelBase {
@@ -14,6 +17,16 @@ public class Item extends ModelBase {
     private Byte[] image;
     @OneToOne(targetEntity = SubCategory.class)
     private SubCategory subCategory;
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private Set<ItemInstance> itemInstances;
+
+    public Set<ItemInstance> getItemInstances() {
+        return itemInstances;
+    }
+
+    public void setItemInstances(Set<ItemInstance> itemInstances) {
+        this.itemInstances = itemInstances;
+    }
 
     public String getName() {
         return name;

@@ -6,16 +6,13 @@ package com.sales.market.model;
 
 import com.sales.market.dto.ItemInstanceDto;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UK_ITEMINSTANCE_IDENTIFIER", columnNames = {"identifier"})})
 public class ItemInstance extends ModelBase<ItemInstanceDto> {
-    @OneToOne
+    @ManyToOne
     private Item item;
     private String identifier;// sku
 

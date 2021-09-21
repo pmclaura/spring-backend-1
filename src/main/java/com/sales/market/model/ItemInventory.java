@@ -7,8 +7,11 @@ package com.sales.market.model;
 import com.sales.market.dto.ItemInventoryDto;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 public class ItemInventory extends ModelBase<ItemInventoryDto>{
@@ -19,6 +22,16 @@ public class ItemInventory extends ModelBase<ItemInventoryDto>{
     private BigDecimal lowerBoundThreshold;
     private BigDecimal upperBoundThreshold;
     private BigDecimal totalPrice;
+    @OneToMany(mappedBy = "itemInventory", fetch = FetchType.LAZY)
+    private Set<ItemInventoryEntry> itemInventoryEntries;
+
+    public Set<ItemInventoryEntry> getItemInventoryEntries() {
+        return itemInventoryEntries;
+    }
+
+    public void setItemInventoryEntries(Set<ItemInventoryEntry> itemInventoryEntries) {
+        this.itemInventoryEntries = itemInventoryEntries;
+    }
 
     public Item getItem() {
         return item;
