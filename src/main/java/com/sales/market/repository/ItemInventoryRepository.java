@@ -9,4 +9,7 @@ public interface ItemInventoryRepository extends GenericRepository<ItemInventory
     @Query("SELECT items FROM ItemInventory items"
             +" WHERE items.stockQuantity <= items.lowerBoundThreshold")
     List<ItemInventory> geItemsLowerBoundery();
+    @Query("SELECT items FROM ItemInventory items"
+            +" WHERE items.stockQuantity >= items.upperBoundThreshold")
+    List<ItemInventory> geItemsUpperBoundery();
 }

@@ -11,6 +11,15 @@ public class InventoryEntryDto extends DtoBase<ItemInventoryEntry> {
     private MovementType movementType;
     private BigDecimal quantity;
     private String itemInstanceSkus;
+    private BigDecimal totalCost;
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
 
     public ItemInventoryDto getItemInventory() {
         return itemInventory;

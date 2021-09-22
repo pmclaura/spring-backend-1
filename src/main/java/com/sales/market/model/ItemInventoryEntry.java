@@ -18,6 +18,15 @@ public class ItemInventoryEntry extends ModelBase<InventoryEntryDto> {
     private MovementType movementType;
     private BigDecimal quantity; // represent sale or buy instances quantity
     private String itemInstanceSkus; //represents a list of the sku of the involved item instances
+    private BigDecimal totalCost;
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
 
     public ItemInventory getItemInventory() {
         return itemInventory;

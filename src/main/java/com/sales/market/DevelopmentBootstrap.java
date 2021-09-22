@@ -67,6 +67,7 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
         persistBuy(BigDecimal.ONE);
         persistCategoriesAndSubCategories();
         Item maltinItem = persistItems(beverageSubCat,"B-MALTIN", "MALTIN");
+        persistItemInventory(maltinItem, new BigDecimal(15), new BigDecimal(10), new BigDecimal(50), new BigDecimal(150));
         persistItemInstances(maltinItem);
         persistsItemsAndItemInventory();
         initializeRoles();
@@ -144,14 +145,14 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
     }
 
     private void persistsItemsAndItemInventory(){
-        Item item1 = persistItems(beverageSubCat, "B-MALTIN", "MALTIN");
-        persistItemInventory(item1, new BigDecimal(2), new BigDecimal(10), new BigDecimal(50));
+        Item item1 = persistItems(beverageSubCat, "B-FANTA", "FANTA");
+        persistItemInventory(item1, new BigDecimal(2), new BigDecimal(10), new BigDecimal(50), new BigDecimal(20));
         Item item2 = persistItems(beverageSubCat, "B-PEPSI", "PEPSI");
-        persistItemInventory(item2, new BigDecimal(25), new BigDecimal(10), new BigDecimal(50));
+        persistItemInventory(item2, new BigDecimal(25), new BigDecimal(10), new BigDecimal(50),new BigDecimal(250));
         Item item3 = persistItems(beverageSubCat, "B-7UP", "7UP");
-        persistItemInventory(item3, new BigDecimal(10), new BigDecimal(10), new BigDecimal(50));
+        persistItemInventory(item3, new BigDecimal(10), new BigDecimal(10), new BigDecimal(50),new BigDecimal(100));
         Item item4 = persistItems(beverageSubCat, "B-COKE", "COKE");
-        persistItemInventory(item4, new BigDecimal(40), new BigDecimal(4), new BigDecimal(50));
+        persistItemInventory(item4, new BigDecimal(40), new BigDecimal(4), new BigDecimal(50),new BigDecimal(400));
     }
     private Item persistItems(SubCategory subCategory, String code, String name) {
         Item item = new Item();
@@ -167,13 +168,14 @@ public class DevelopmentBootstrap implements ApplicationListener<ContextRefreshe
     }
 
     private ItemInventory persistItemInventory(Item item, BigDecimal stockQuantity,
-                                               BigDecimal lowerBound, BigDecimal upperBound){
+                                               BigDecimal lowerBound, BigDecimal upperBound, BigDecimal totalPrice){
 
         ItemInventory itemInventory = new ItemInventory();
         itemInventory.setItem(item);
         itemInventory.setStockQuantity(stockQuantity);
         itemInventory.setLowerBoundThreshold(lowerBound);
         itemInventory.setUpperBoundThreshold(upperBound);
+        itemInventory.setTotalPrice(totalPrice);
         return itemInventoryService.save(itemInventory);
     }
 

@@ -4,11 +4,8 @@ import com.sales.market.dto.ItemInventoryDto;
 import com.sales.market.model.ItemInventory;
 import com.sales.market.service.ItemInventoryService;
 import com.sales.market.service.GenericService;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
@@ -23,9 +20,9 @@ public class ItemInventoryController extends GenericController<ItemInventory, It
         this.service = service;
     }
 
-    @GetMapping("/itemsLower")
+    @GetMapping("/itemsLowerAndUpper")
     public List<ItemInventoryDto> getItemslowerBoundThreshold() throws MessagingException {
-        List<ItemInventory> itemInventories = service.getItemsLowerBoundery();
+        List<ItemInventory> itemInventories = service.getItemsLowerAndUpperBoundery();
         return new ItemInventoryDto().toListDto(itemInventories, modelMapper);
     }
 

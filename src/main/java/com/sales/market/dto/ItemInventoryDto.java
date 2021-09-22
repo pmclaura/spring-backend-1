@@ -12,6 +12,15 @@ public class ItemInventoryDto extends DtoBase<ItemInventory> {
     private BigDecimal stockQuantity;
     private BigDecimal lowerBoundThreshold;
     private BigDecimal upperBoundThreshold;
+    private BigDecimal totalPrice;
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public ItemDto getItem() {
         return item;
